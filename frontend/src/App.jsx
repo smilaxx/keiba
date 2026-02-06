@@ -7,7 +7,7 @@ function App() {
   const [isCameraStarted, setIsCameraStarted] = useState(false); // 状態管理を追加
   const [uploadStatus, setUploadStatus] = useState("");
 
-  const API_URL = "keiba-backend";
+  const API_URL = "http://localhost:8000/upload";
 
   // カメラを起動する
   const startCamera = async () => {
@@ -47,7 +47,7 @@ function App() {
 
     const reader = new FileReader();
     reader.onload = (e) => {
-      setCaputuredImage(e.target.result);
+      setCapturedImage(e.target.result);
       setUploadStatus("画像を選択。送信ボタンを押して");
     };
     reader.readAsDataURL(file);
@@ -60,11 +60,11 @@ function App() {
 
 	  try {
 	    const blob = await (await fetch(capturedImage)).blob();
-            const formData = new FromData();
+            const formData = new FormData();
             formData.append('file', blob, 'capture.jpg');
 
             const response = await fetch(API_URL, {
-              method: POST,
+              method: "POST",
               body: formData,
 	    });
 
@@ -74,7 +74,7 @@ function App() {
               setUploadStatus("fail");
 	    }
 	  } catch(err) {
-            console.erorr(err);
+            console.error(err);
 	    setUploadStatus("error");
 	  }	  
   }
