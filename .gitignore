@@ -1,1 +1,2 @@
 backend/storage/*
+!backend/storage/.gitkeep
