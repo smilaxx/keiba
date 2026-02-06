@@ -5,6 +5,9 @@ function App() {
   const canvasRef = useRef(null);
   const [capturedImage, setCapturedImage] = useState(null);
   const [isCameraStarted, setIsCameraStarted] = useState(false); // 状態管理を追加
+  const [uploadStatus, setUploadStatus] = useState("");
+
+  const API_URL = "192.168.3.18";
 
   // カメラを起動する
   const startCamera = async () => {
@@ -38,6 +41,31 @@ function App() {
     }
   };
 
+  const uploadImage = async () => {
+    if (!capturedImage) return;
+	  setUploadStatus("送信中");
+
+	  try {
+	    const blob = await (await fetch(capturedImage)).blob();
+            const formData = new FromData();
+            formData.append('file', blob, 'capture.jpg');
+
+            const response = await fetch(API_URL, {
+              method: POST,
+              body: formData,
+	    });
+
+	    if (response.ok) {
+              setUploadStatus("Success");
+	    } else {
+              setUploadStatus("fail");
+	    }
+	  } catch(err) {
+            console.erorr(err);
+	    setUploadStatus("error");
+	  }	  
+  }
+
   return (
     <div style={{ textAlign: 'center', fontFamily: 'sans-serif', padding: '20px' }}>
       <h2>カメラアプリ試作</h2>
@@ -62,7 +90,13 @@ function App() {
         <div style={{ marginTop: '20px' }}>
           <h3>撮影された写真</h3>
           <img src={capturedImage} alt="Captured" style={{ width: '100%', maxWidth: '400px', border: '2px solid #333' }} />
-        </div>
+        
+	<br />
+	<button onClick={uploadImage} style={{...btnStyle, backgroudColor: '#28a745', marginTop: '10px'}}>
+	      この写真をPCに保存
+	      </button>
+	      <p>{uploadStatus}</p>
+	      </div>
       )}
 
       <canvas ref={canvasRef} style={{ display: 'none' }} />
