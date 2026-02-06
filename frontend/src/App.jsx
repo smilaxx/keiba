@@ -41,6 +41,19 @@ function App() {
     }
   };
 
+  const handleFileSelect = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setCaputuredImage(e.target.result);
+      setUploadStatus("画像を選択。送信ボタンを押して");
+    };
+    reader.readAsDataURL(file);
+  }
+		
+
   const uploadImage = async () => {
     if (!capturedImage) return;
 	  setUploadStatus("送信中");
@@ -78,7 +91,14 @@ function App() {
           <button onClick={takePhoto} style={{...btnStyle, backgroundColor: 'red'}}>シャッター</button>
         )}
       </div>
-
+    
+      {/*画像を選択する*/}
+      <div style={{ border: '1px solid #ddd'}}>
+	  <p style={{ margin: '0 0 10px 0'}}>保存済み画像から選択</p>
+	  画像を選択
+	  <input type='file' accept="image/*" onChange={handleFileSelect} style={{ display: 'none'}} />
+      </div>
+	  
       <video 
         ref={videoRef} 
         autoPlay 
