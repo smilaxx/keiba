@@ -7,7 +7,7 @@ function App() {
   const [isCameraStarted, setIsCameraStarted] = useState(false); // 状態管理を追加
   const [uploadStatus, setUploadStatus] = useState("");
 
-  const API_URL = "192.168.3.18";
+  const API_URL = "keiba-backend";
 
   // カメラを起動する
   const startCamera = async () => {
@@ -79,44 +79,44 @@ function App() {
 	  }	  
   }
 
-  return (
+return (
     <div style={{ textAlign: 'center', fontFamily: 'sans-serif', padding: '20px' }}>
-      <h2>カメラアプリ試作</h2>
+      <h2>画像送信アプリ</h2>
       
-      <div style={{ marginBottom: '10px' }}>
-        {/* ステート(isCameraStarted)に基づいてボタンを出し分け */}
-        {!isCameraStarted ? (
-          <button onClick={startCamera} style={btnStyle}>カメラを起動</button>
-        ) : (
-          <button onClick={takePhoto} style={{...btnStyle, backgroundColor: 'red'}}>シャッター</button>
-        )}
+      {/* 選択ボタンのレイアウト */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center', marginBottom: '20px' }}>
+        
+        {/* カメラセクション */}
+        <div style={{ border: '1px solid #ddd', padding: '15px', borderRadius: '10px', width: '100%', maxWidth: '300px' }}>
+          <p style={{ margin: '0 0 10px 0', fontSize: '14px', color: '#666' }}>リアルタイム撮影</p>
+          {!isCameraStarted ? (
+            <button onClick={startCamera} style={btnStyle}>カメラを起動</button>
+          ) : (
+            <button onClick={takePhoto} style={{...btnStyle, backgroundColor: 'red'}}>シャッター</button>
+          )}
+        </div>
+
+        {/* ファイル選択セクション */}
+        <div style={{ border: '1px solid #ddd', padding: '15px', borderRadius: '10px', width: '100%', maxWidth: '300px' }}>
+          <p style={{ margin: '0 0 10px 0', fontSize: '14px', color: '#666' }}>保存済み画像から選択</p>
+          <label style={{...btnStyle, backgroundColor: '#6c757d', display: 'inline-block', cursor: 'pointer' }}>
+            画像を選択
+            <input type="file" accept="image/*" onChange={handleFileSelect} style={{ display: 'none' }} />
+          </label>
+        </div>
       </div>
-    
-      {/*画像を選択する*/}
-      <div style={{ border: '1px solid #ddd'}}>
-	  <p style={{ margin: '0 0 10px 0'}}>保存済み画像から選択</p>
-	  画像を選択
-	  <input type='file' accept="image/*" onChange={handleFileSelect} style={{ display: 'none'}} />
-      </div>
-	  
-      <video 
-        ref={videoRef} 
-        autoPlay 
-        playsInline 
-        style={{ width: '100%', maxWidth: '400px', borderRadius: '8px', backgroundColor: '#000' }} 
-      />
+
+      <video ref={videoRef} autoPlay playsInline style={videoStyle} />
 
       {capturedImage && (
-        <div style={{ marginTop: '20px' }}>
-          <h3>撮影された写真</h3>
-          <img src={capturedImage} alt="Captured" style={{ width: '100%', maxWidth: '400px', border: '2px solid #333' }} />
-        
-	<br />
-	<button onClick={uploadImage} style={{...btnStyle, backgroudColor: '#28a745', marginTop: '10px'}}>
-	      この写真をPCに保存
-	      </button>
-	      <p>{uploadStatus}</p>
-	      </div>
+        <div style={{ marginTop: '20px', borderTop: '2px solid #eee', paddingTop: '20px' }}>
+          <img src={capturedImage} alt="Preview" style={{ width: '100%', maxWidth: '300px', borderRadius: '5px' }} />
+          <br />
+          <button onClick={uploadImage} style={{...btnStyle, backgroundColor: '#28a745', marginTop: '10px', width: '100%', maxWidth: '300px'}}>
+            この画像をPCに送信
+          </button>
+          <p style={{ fontWeight: 'bold' }}>{uploadStatus}</p>
+        </div>
       )}
 
       <canvas ref={canvasRef} style={{ display: 'none' }} />
@@ -124,14 +124,7 @@ function App() {
   );
 }
 
-const btnStyle = {
-  padding: '12px 24px',
-  fontSize: '16px',
-  color: 'white',
-  backgroundColor: '#007bff',
-  border: 'none',
-  borderRadius: '5px',
-};
+const btnStyle = { padding: '12px 24px', fontSize: '14px', color: 'white', border: 'none', borderRadius: '8px', borderBottom: '3px solid rgba(0,0,0,0.2)' };
+const videoStyle = { width: '100%', maxWidth: '400px', borderRadius: '8px', backgroundColor: '#000', display: 'block', margin: '0 auto' };
 
 export default App;
-
